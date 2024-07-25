@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">chrono-calcul-mobile</string>
+    <string name="app_name" translatable="false">Chrono calcul</string>
+    <string name="genericError">Error</string>
 </resources>
