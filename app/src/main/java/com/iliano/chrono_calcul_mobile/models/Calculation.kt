@@ -3,12 +3,15 @@ package com.iliano.chrono_calcul_mobile.models
 import java.time.Duration
 import java.time.LocalTime
 
-
 data class Calculation(
     private var _targetTime: LocalTime = LocalTime.now()
 ) {
-    fun setTargetTime(hours: Int, minutes: Int) {
+    fun setTargetTimeByInt(hours: Int, minutes: Int) {
         _targetTime = LocalTime.of(hours, minutes)
+    }
+
+    fun setTargetTimeByLocalTime(localTime: LocalTime) {
+        _targetTime = localTime
     }
 
     val duration: Duration
@@ -16,7 +19,7 @@ data class Calculation(
             val currentTime = LocalTime.now()
 
             if (_targetTime.isBefore(currentTime)) {
-                throw Exception("The target time is before the current time")
+                throw Exception()
             }
 
             return Duration.between(currentTime, _targetTime)

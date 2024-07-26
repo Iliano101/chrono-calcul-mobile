@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.LocalTime
 
 class CalculatorViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(CalculatorState())
@@ -24,14 +25,17 @@ class CalculatorViewModel : ViewModel() {
         }
     }
 
-    private fun updateResult() {
-        TODO("UPDATE")
-        _uiState.value.calcul.setTargetTime(23, 0)
+    fun updateTargetTimeWithLocalTime(localTime: LocalTime) {
+        _uiState.value.calculation.setTargetTimeByLocalTime(localTime)
+        updateResult()
+    }
 
+
+    private fun updateResult() {
         try {
             _uiState.update {
                 _uiState.value.copy(
-                    displayText = _uiState.value.calcul.duration.toFormatedString()
+                    displayText = _uiState.value.calculation.duration.toFormatedString()
                 )
             }
         } catch (ex: Exception) {
