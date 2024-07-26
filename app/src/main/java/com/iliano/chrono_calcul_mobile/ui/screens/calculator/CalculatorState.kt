@@ -4,5 +4,5 @@ import com.iliano.chrono_calcul_mobile.models.Calculation
 
 data class CalculatorState(
     val calculation: Calculation = Calculation(),
-    val displayText: String = String(),
+    val resultText: String = String()
 )

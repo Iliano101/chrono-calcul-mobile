@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.time.LocalTime
 
 class CalculatorViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(CalculatorState())
@@ -18,6 +17,8 @@ class CalculatorViewModel : ViewModel() {
 
     init {
         viewModelScope.launch {
+            setOffset(false)
+            setTargetTime(23, 59)
             while (true) {
                 updateResult()
                 delay(Constants.UPDATE_DELAY)
@@ -25,25 +26,23 @@ class CalculatorViewModel : ViewModel() {
         }
     }
 
-    fun updateTargetTimeWithLocalTime(localTime: LocalTime) {
-        _uiState.value.calculation.setTargetTimeByLocalTime(localTime)
-        updateResult()
+    private fun setTargetTime(hours: Int, minutes: Int) {
+        _uiState.value.calculation.setTargetTime(hours, minutes)
     }
 
+    private fun setOffset(enable: Boolean) {
+        _uiState.value.calculation.applyOffset = enable
+    }
 
     private fun updateResult() {
-        try {
-            _uiState.update {
-                _uiState.value.copy(
-                    displayText = _uiState.value.calculation.duration.toFormatedString()
-                )
-            }
-        } catch (ex: Exception) {
-            _uiState.update {
-                _uiState.value.copy(
-                    displayText = ex.message ?: "Error"
-                )
-            }
+        _uiState.update {
+            _uiState.value.copy(
+                resultText = try {
+                    _uiState.value.calculation.duration.toFormatedString()
+                } catch (_: Exception) {
+                    Constants.STRINGS.DEFAULT_DISPLAY
+                }
+            )
         }
     }
 }
