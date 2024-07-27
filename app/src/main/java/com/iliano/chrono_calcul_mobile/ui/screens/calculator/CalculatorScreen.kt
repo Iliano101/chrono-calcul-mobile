@@ -5,22 +5,29 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.iliano.chrono_calcul_mobile.R
 import com.iliano.chrono_calcul_mobile.core.toFormatedString
 import java.time.LocalTime
 
 @Composable
-fun CalculatorScreen(calculatorViewModel: CalculatorViewModel = CalculatorViewModel()) {
+fun CalculatorScreen(calculatorViewModel: CalculatorViewModel = viewModel()) {
     val uiStateValue = calculatorViewModel.uiState.collectAsStateWithLifecycle().value
 
     Column(
@@ -28,8 +35,18 @@ fun CalculatorScreen(calculatorViewModel: CalculatorViewModel = CalculatorViewMo
         verticalArrangement = Arrangement.SpaceAround
     ) {
         ResultBox(uiStateValue.resultText)
-        InputsBox(uiStateValue.calculation.getTargetTime())
-
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceAround,
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(0.3f)
+        ) {
+            TimePickerDisplay(selectedTime = uiStateValue.calculation.getTargetTime(), onPress = {})
+            ToggleBox(
+                checkedState = uiStateValue.checkBoxState,
+                onCheckedChange = { calculatorViewModel.onOffsetToggle(it) })
+        }
     }
 }
 
@@ -51,20 +68,21 @@ fun ResultBox(resultString: String) {
     }
 }
 
+
 @Composable
-fun InputsBox(selectionTime: LocalTime) {
+fun TimePickerDisplay(selectedTime: LocalTime, onPress: () -> Unit) {
     Box(
         modifier = Modifier
             .clip(RoundedCornerShape(16.dp))
-            .background(MaterialTheme.colorScheme.secondaryContainer)
+            .background(MaterialTheme.colorScheme.tertiaryContainer)
             .clickable {
-
+                onPress()
             }
     ) {
         Text(
-            text = selectionTime.toFormatedString(),
+            text = selectedTime.toFormatedString(),
             style = MaterialTheme.typography.displayLarge,
-            color = MaterialTheme.colorScheme.onPrimaryContainer,
+            color = MaterialTheme.colorScheme.onTertiaryContainer,
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .padding(16.dp)
@@ -72,5 +90,29 @@ fun InputsBox(selectionTime: LocalTime) {
         )
     }
 }
+
+
+@Composable
+fun ToggleBox(checkedState: Boolean, onCheckedChange: (Boolean) -> Unit) {
+    Box(
+        modifier = Modifier
+            .clip(RoundedCornerShape(16.dp))
+            .background(MaterialTheme.colorScheme.secondaryContainer)
+            .fillMaxWidth(0.5f)
+            .padding(vertical = 8.dp, horizontal = 16.dp)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceAround, modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                text = stringResource(R.string.offset_switch),
+                color = MaterialTheme.colorScheme.onSecondaryContainer
+            )
+            Switch(checked = checkedState, onCheckedChange = onCheckedChange)
+        }
+    }
+}
+
 
 

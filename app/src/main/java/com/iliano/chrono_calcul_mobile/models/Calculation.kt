@@ -5,7 +5,7 @@ import java.time.Duration
 import java.time.LocalTime
 
 data class Calculation(
-    var applyOffset: Boolean = true,
+    var applyOffset: Boolean = Constants.DEFAULT_VALUES.OFFSET,
     private var _targetTime: LocalTime = LocalTime.now()
 ) {
 
