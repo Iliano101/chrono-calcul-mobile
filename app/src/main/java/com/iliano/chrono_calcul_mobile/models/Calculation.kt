@@ -8,8 +8,6 @@ data class Calculation(
     var applyOffset: Boolean = Constants.DEFAULT_VALUES.OFFSET,
     private var _targetTime: LocalTime = LocalTime.now()
 ) {
-
-
     fun setTargetTime(hours: Int, minutes: Int) {
         _targetTime = LocalTime.of(hours, minutes)
     }
@@ -33,5 +31,4 @@ data class Calculation(
 
             return Duration.between(currentTime, _targetTime)
         }
-
 }

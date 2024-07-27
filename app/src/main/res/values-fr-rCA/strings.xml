@@ -2,4 +2,5 @@
 <resources>
     <string name="genericError">Erreur</string>
     <string name="offset_switch">-15 mins</string>
+    <string name="confirmButton">OK</string>
 </resources>

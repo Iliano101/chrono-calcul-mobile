@@ -1,6 +1,8 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.iliano.chrono_calcul_mobile.ui.screens.calculator
 
-import android.util.Log
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.iliano.chrono_calcul_mobile.core.Constants
@@ -16,11 +18,8 @@ class CalculatorViewModel : ViewModel() {
     val uiState = _uiState.asStateFlow()
 
     init {
-        setTargetTime(23, 59)
         viewModelScope.launch {
             while (true) {
-                Log.d("MHM", "checkBoxState ${_uiState.value.checkBoxState}")
-
                 updateResult()
                 delay(Constants.UPDATE_DELAY)
             }
@@ -33,16 +32,31 @@ class CalculatorViewModel : ViewModel() {
                 checkBoxState = enable
             )
         }
-        setOffset(enable)
+        setCalculationOffset(enable)
         updateResult()
     }
 
-
-    private fun setTargetTime(hours: Int, minutes: Int) {
-        _uiState.value.calculation.setTargetTime(hours, minutes)
+    fun showTimePicker() {
+        _uiState.update {
+            _uiState.value.copy(
+                showTimePicker = true
+            )
+        }
     }
 
-    private fun setOffset(enable: Boolean) {
+    fun hideTimePicker() {
+        _uiState.update {
+            _uiState.value.copy(
+                showTimePicker = false
+            )
+        }
+        val timePickerState = _uiState.value.timePickerState
+        _uiState.value.calculation.setTargetTime(timePickerState.hour, timePickerState.minute)
+
+        updateResult()
+    }
+
+    private fun setCalculationOffset(enable: Boolean) {
         _uiState.value.calculation.applyOffset = enable
     }
 

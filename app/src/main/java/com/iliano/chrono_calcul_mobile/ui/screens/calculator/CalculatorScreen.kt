@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.iliano.chrono_calcul_mobile.ui.screens.calculator
 
 import androidx.compose.foundation.background
@@ -10,9 +12,13 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TimePicker
+import androidx.compose.material3.TimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,6 +30,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.iliano.chrono_calcul_mobile.R
 import com.iliano.chrono_calcul_mobile.core.toFormatedString
+import com.iliano.chrono_calcul_mobile.ui.components.TimePickerDialog
 import java.time.LocalTime
 
 @Composable
@@ -42,10 +49,41 @@ fun CalculatorScreen(calculatorViewModel: CalculatorViewModel = viewModel()) {
                 .fillMaxWidth()
                 .fillMaxHeight(0.3f)
         ) {
-            TimePickerDisplay(selectedTime = uiStateValue.calculation.getTargetTime(), onPress = {})
+            TimePickerDisplay(
+                selectedTime = uiStateValue.calculation.getTargetTime(),
+                onPress = { calculatorViewModel.showTimePicker() }
+            )
             ToggleBox(
                 checkedState = uiStateValue.checkBoxState,
                 onCheckedChange = { calculatorViewModel.onOffsetToggle(it) })
+        }
+    }
+    TimerPickerLogic(
+        showTimePicker = uiStateValue.showTimePicker,
+        timerPickerState = uiStateValue.timePickerState,
+        closeTimePicker = { calculatorViewModel.hideTimePicker() }
+    )
+}
+
+@Composable
+fun TimerPickerLogic(
+    showTimePicker: Boolean,
+    timerPickerState: TimePickerState,
+    closeTimePicker: () -> Unit
+) {
+    if (showTimePicker) {
+        TimePickerDialog(
+            onDismissRequest = { closeTimePicker() },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        closeTimePicker()
+                    }
+                ) { Text(stringResource(R.string.confirmButton)) }
+            },
+        )
+        {
+            TimePicker(state = timerPickerState)
         }
     }
 }
@@ -67,7 +105,6 @@ fun ResultBox(resultString: String) {
         )
     }
 }
-
 
 @Composable
 fun TimePickerDisplay(selectedTime: LocalTime, onPress: () -> Unit) {
@@ -91,7 +128,6 @@ fun TimePickerDisplay(selectedTime: LocalTime, onPress: () -> Unit) {
     }
 }
 
-
 @Composable
 fun ToggleBox(checkedState: Boolean, onCheckedChange: (Boolean) -> Unit) {
     Box(
@@ -113,6 +149,4 @@ fun ToggleBox(checkedState: Boolean, onCheckedChange: (Boolean) -> Unit) {
         }
     }
 }
-
-
 

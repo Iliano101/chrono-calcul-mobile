@@ -11,7 +11,6 @@ fun Duration.toFormatedString(): String {
 }
 
 fun LocalTime.toFormatedString(): String {
-
     return Constants.STRINGS.TIME_FORMAT.format(
         this.hour,
         this.minute
