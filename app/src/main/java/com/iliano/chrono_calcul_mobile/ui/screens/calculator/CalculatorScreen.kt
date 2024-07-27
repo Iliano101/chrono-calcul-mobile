@@ -41,6 +41,7 @@ fun CalculatorScreen(calculatorViewModel: CalculatorViewModel = viewModel()) {
     val uiStateValue = calculatorViewModel.uiState.collectAsStateWithLifecycle().value
 
     val context = LocalContext.current
+    
 
     LaunchedEffect(true) {
         calculatorViewModel.eventsFlow.collect { event ->
@@ -79,17 +80,26 @@ fun CalculatorScreen(calculatorViewModel: CalculatorViewModel = viewModel()) {
         ) {
             TimePickerDisplay(
                 selectedTime = uiStateValue.calculation.getTargetTime(),
-                onPress = { calculatorViewModel.showTimePicker() }
+                onPress = {
+                    calculatorViewModel.showTimePicker()
+                    calculatorViewModel.vibrate(context, CalculatorViewModel.VibrationTypes.Short)
+                }
             )
             ToggleBox(
                 checkedState = uiStateValue.checkBoxState,
-                onCheckedChange = { calculatorViewModel.onOffsetToggle(it) })
+                onCheckedChange = {
+                    calculatorViewModel.onOffsetToggle(it)
+                    calculatorViewModel.vibrate(context, CalculatorViewModel.VibrationTypes.Short)
+                })
         }
     }
     TimerPickerLogic(
         showTimePicker = uiStateValue.showTimePicker,
         timerPickerState = uiStateValue.timePickerState,
-        closeTimePicker = { calculatorViewModel.hideTimePicker() }
+        closeTimePicker = {
+            calculatorViewModel.hideTimePicker()
+            calculatorViewModel.vibrate(context, CalculatorViewModel.VibrationTypes.Short)
+        }
     )
 }
 
@@ -173,8 +183,9 @@ fun ToggleBox(checkedState: Boolean, onCheckedChange: (Boolean) -> Unit) {
                 text = stringResource(R.string.offset_switch),
                 color = MaterialTheme.colorScheme.onSecondaryContainer
             )
-            Switch(checked = checkedState, onCheckedChange = onCheckedChange)
+            Switch(checked = checkedState, onCheckedChange = {
+                onCheckedChange(it)
+            })
         }
     }
 }
-

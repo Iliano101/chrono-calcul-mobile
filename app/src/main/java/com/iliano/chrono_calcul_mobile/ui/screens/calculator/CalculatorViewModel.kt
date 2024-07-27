@@ -2,6 +2,9 @@
 
 package com.iliano.chrono_calcul_mobile.ui.screens.calculator
 
+import android.content.Context
+import android.os.VibrationEffect
+import android.os.VibratorManager
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -67,6 +70,18 @@ class CalculatorViewModel : ViewModel() {
         }
     }
 
+    fun vibrate(context: Context, type: VibrationTypes) {
+        when (type) {
+            VibrationTypes.Short -> {
+                (context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager).defaultVibrator.vibrate(
+                    VibrationEffect.createOneShot(1, VibrationEffect.DEFAULT_AMPLITUDE)
+                )
+            }
+        }
+
+
+    }
+
     private fun setCalculationOffset(enable: Boolean) {
         _uiState.value.calculation.applyOffset = enable
     }
@@ -83,4 +98,9 @@ class CalculatorViewModel : ViewModel() {
         data object EnteredTimeInvalid : ScreenEvent()
         data object GenericError : ScreenEvent()
     }
+
+    sealed class VibrationTypes {
+        data object Short : VibrationTypes()
+    }
+
 }
