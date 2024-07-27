@@ -1,8 +1,9 @@
 package com.iliano.chrono_calcul_mobile.models
 
 import com.iliano.chrono_calcul_mobile.core.Constants
-import java.time.Duration
+import com.iliano.chrono_calcul_mobile.core.durationBetween
 import java.time.LocalTime
+import kotlin.time.Duration
 
 data class Calculation(
     var applyOffset: Boolean = Constants.DEFAULT_VALUES.OFFSET,
@@ -25,10 +26,9 @@ data class Calculation(
             }
 
             if (_targetTime.isBefore(currentTime)) {
-                throw Exception("Le temps entré est dans le passé")
+                return Duration.ZERO
             }
 
-
-            return Duration.between(currentTime, _targetTime)
+            return currentTime.durationBetween(_targetTime)
         }
 }

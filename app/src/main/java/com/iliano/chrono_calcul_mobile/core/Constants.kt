@@ -16,7 +16,6 @@ object Constants {
     }
 
     object STRINGS {
-        const val DEFAULT_DISPLAY = "00:00:00"
         const val DURATION_FORMAT = "%02d:%02d:00"
         const val TIME_FORMAT = "%02d:%02d"
     }
