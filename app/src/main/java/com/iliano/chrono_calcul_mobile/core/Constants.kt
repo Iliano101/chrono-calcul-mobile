@@ -8,6 +8,7 @@ object Constants {
     object DEFAULT_VALUES {
         const val OFFSET = true
         const val UI_IS_24_HOUR = true
+        const val TIME_PICKER_SHOWN = false
     }
 
     object TIME_OFFSETS {

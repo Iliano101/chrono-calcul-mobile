@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.iliano.chrono_calcul_mobile.ui.screens.calculator
 
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -6,7 +8,7 @@ import com.iliano.chrono_calcul_mobile.core.Constants
 import com.iliano.chrono_calcul_mobile.models.Calculation
 import java.time.LocalTime
 
-data class CalculatorState @OptIn(ExperimentalMaterial3Api::class) constructor(
+data class CalculatorState(
     val calculation: Calculation = Calculation(),
     val resultText: String = String(),
     val checkBoxState: Boolean = Constants.DEFAULT_VALUES.OFFSET,
@@ -15,5 +17,5 @@ data class CalculatorState @OptIn(ExperimentalMaterial3Api::class) constructor(
         initialHour = LocalTime.now().hour,
         initialMinute = LocalTime.now().minute
     ),
-    val showTimePicker: Boolean = false
+    val showTimePicker: Boolean = Constants.DEFAULT_VALUES.TIME_PICKER_SHOWN
 )
