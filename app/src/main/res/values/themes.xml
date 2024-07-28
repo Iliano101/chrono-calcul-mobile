@@ -2,4 +2,9 @@
 <resources>
 
     <style name="Theme.Chronocalculmobile" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/blueDarkBackground</item>
+        <item name="postSplashScreenTheme">@style/Theme.Chronocalculmobile</item>
+    </style>
 </resources>
