@@ -2,6 +2,8 @@
 
 package com.iliano.chrono_calcul_mobile.ui.screens.calculator
 
+import android.content.Context
+import android.content.res.Configuration
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -12,6 +14,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -25,6 +28,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -39,9 +43,19 @@ import java.time.LocalTime
 @Composable
 fun CalculatorScreen(calculatorViewModel: CalculatorViewModel = viewModel()) {
     val uiStateValue = calculatorViewModel.uiState.collectAsStateWithLifecycle().value
-
     val context = LocalContext.current
-    
+
+    if (uiStateValue.showTimePicker) {
+        LaunchedEffect(
+            key1 = uiStateValue.timePickerState.minute,
+            key2 = uiStateValue.timePickerState.hour
+        ) {
+            calculatorViewModel.vibrateDevice(
+                context = context,
+                type = CalculatorViewModel.VibrationTypes.Tick
+            )
+        }
+    }
 
     LaunchedEffect(true) {
         calculatorViewModel.eventsFlow.collect { event ->
@@ -66,6 +80,30 @@ fun CalculatorScreen(calculatorViewModel: CalculatorViewModel = viewModel()) {
 
     }
 
+    val orientation = LocalConfiguration.current.orientation
+    if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+        OrientationPortrait(uiStateValue, calculatorViewModel, context)
+    } else if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        OrientationLandscape(uiStateValue, calculatorViewModel, context)
+    }
+
+    TimerPickerLogic(
+        showTimePicker = uiStateValue.showTimePicker,
+        timerPickerState = uiStateValue.timePickerState,
+        closeTimePicker = {
+            calculatorViewModel.hideTimePicker()
+            calculatorViewModel.vibrateDevice(context, CalculatorViewModel.VibrationTypes.Short)
+        }
+    )
+}
+
+
+@Composable
+fun OrientationPortrait(
+    uiStateValue: CalculatorState,
+    calculatorViewModel: CalculatorViewModel,
+    context: Context
+) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceAround
@@ -82,26 +120,68 @@ fun CalculatorScreen(calculatorViewModel: CalculatorViewModel = viewModel()) {
                 selectedTime = uiStateValue.calculation.getTargetTime(),
                 onPress = {
                     calculatorViewModel.showTimePicker()
-                    calculatorViewModel.vibrate(context, CalculatorViewModel.VibrationTypes.Short)
+                    calculatorViewModel.vibrateDevice(
+                        context,
+                        CalculatorViewModel.VibrationTypes.Short
+                    )
                 }
             )
             ToggleBox(
                 checkedState = uiStateValue.checkBoxState,
                 onCheckedChange = {
                     calculatorViewModel.onOffsetToggle(it)
-                    calculatorViewModel.vibrate(context, CalculatorViewModel.VibrationTypes.Short)
+                    calculatorViewModel.vibrateDevice(
+                        context,
+                        CalculatorViewModel.VibrationTypes.Short
+                    )
                 })
         }
     }
-    TimerPickerLogic(
-        showTimePicker = uiStateValue.showTimePicker,
-        timerPickerState = uiStateValue.timePickerState,
-        closeTimePicker = {
-            calculatorViewModel.hideTimePicker()
-            calculatorViewModel.vibrate(context, CalculatorViewModel.VibrationTypes.Short)
-        }
-    )
+
 }
+
+@Composable
+fun OrientationLandscape(
+    uiStateValue: CalculatorState,
+    calculatorViewModel: CalculatorViewModel,
+    context: Context
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceAround
+    ) {
+        ResultBox(uiStateValue.resultText)
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(20.dp, Alignment.CenterHorizontally),
+
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            TimePickerDisplay(
+                selectedTime = uiStateValue.calculation.getTargetTime(),
+                onPress = {
+                    calculatorViewModel.showTimePicker()
+                    calculatorViewModel.vibrateDevice(
+                        context,
+                        CalculatorViewModel.VibrationTypes.Short
+                    )
+                }
+            )
+            ToggleBox(
+                checkedState = uiStateValue.checkBoxState,
+                onCheckedChange = {
+                    calculatorViewModel.onOffsetToggle(it)
+                    calculatorViewModel.vibrateDevice(
+                        context,
+                        CalculatorViewModel.VibrationTypes.Short
+                    )
+                })
+        }
+    }
+
+}
+
 
 @Composable
 fun TimerPickerLogic(
@@ -172,7 +252,7 @@ fun ToggleBox(checkedState: Boolean, onCheckedChange: (Boolean) -> Unit) {
         modifier = Modifier
             .clip(RoundedCornerShape(16.dp))
             .background(MaterialTheme.colorScheme.secondaryContainer)
-            .fillMaxWidth(0.5f)
+            .width(200.dp)
             .padding(vertical = 8.dp, horizontal = 16.dp)
     ) {
         Row(

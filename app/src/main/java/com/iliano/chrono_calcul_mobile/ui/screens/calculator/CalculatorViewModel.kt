@@ -70,15 +70,30 @@ class CalculatorViewModel : ViewModel() {
         }
     }
 
-    fun vibrate(context: Context, type: VibrationTypes) {
-        when (type) {
-            VibrationTypes.Short -> {
-                (context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager).defaultVibrator.vibrate(
-                    VibrationEffect.createOneShot(1, VibrationEffect.DEFAULT_AMPLITUDE)
-                )
-            }
-        }
+    fun vibrateDevice(context: Context, type: VibrationTypes) {
+        val vibratorManager =
+            context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
+        val vibrator = vibratorManager.defaultVibrator
 
+        if (vibrator.hasVibrator()) {
+            vibrator.vibrate(
+                when (type) {
+                    VibrationTypes.Short -> {
+                        VibrationEffect.createOneShot(
+                            Constants.VIBRATIONS.SMALL_DURATION,
+                            VibrationEffect.DEFAULT_AMPLITUDE
+                        )
+                    }
+
+                    VibrationTypes.Tick -> {
+                        VibrationEffect.createOneShot(
+                            Constants.VIBRATIONS.SMALL_DURATION, // Duration in milliseconds
+                            Constants.VIBRATIONS.TICK_AMPLITUDE // Half of the default amplitude
+                        )
+                    }
+                }
+            )
+        }
 
     }
 
@@ -101,6 +116,8 @@ class CalculatorViewModel : ViewModel() {
 
     sealed class VibrationTypes {
         data object Short : VibrationTypes()
+        data object Tick : VibrationTypes()
+
     }
 
 }

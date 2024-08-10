@@ -19,4 +19,9 @@ object Constants {
         const val DURATION_FORMAT = "%02d:%02d:00"
         const val TIME_FORMAT = "%02d:%02d"
     }
+
+    object VIBRATIONS {
+        const val TICK_AMPLITUDE = 50
+        const val SMALL_DURATION = 1L
+    }
 }
