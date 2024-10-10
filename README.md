@@ -4,7 +4,7 @@ Ceci est un calculateur de temps entre l'heure actuelle et un temps futur choisi
 
 ### Latest release APK download
 
-<a href="http://github.com/Iliano101/chrono-calcul-mobile/releases/latest/download/chrono-calcul.apk"><img src="https://i.postimg.cc/sxWv2J29/badge-github.png" height="80"></a>
+<a href="http://github.com/Iliano101/chrono-calcul-mobile/releases/latest/download/ChronoCalcul.apk"><img src="https://i.postimg.cc/sxWv2J29/badge-github.png" height="80"></a>
 
 ### Beta APK download
 
