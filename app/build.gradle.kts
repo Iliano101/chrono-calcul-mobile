@@ -1,6 +1,6 @@
 val versionMajor = 1
 val versionMinor = 2
-val versionPatch = 0
+val versionPatch = 1
 
 plugins {
     alias(libs.plugins.android.application)
@@ -10,7 +10,7 @@ plugins {
 
 android {
     namespace = "com.iliano.chrono_calcul_mobile"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.iliano.chrono_calcul_mobile"
